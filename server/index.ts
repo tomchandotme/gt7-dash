@@ -15,12 +15,28 @@ const ioPort = 9527;
 
 const io = new Server({
   /* options */
+  cors: {},
 });
+
+const sendHeartbeat = (s: Socket) => {
+  s.send(Buffer.from("A"), 0, 1, receivePort, psIp, (err) => {
+    if (err) {
+      udpSocket.close();
+      return;
+    }
+
+    console.log("Heartbeat send!");
+  });
+  packetCount = 0;
+};
+
+let packetCount = 0;
 
 // MARK: web socket (communication to dashboard client)
 
 io.on("connection", (socket) => {
   // ...
+  console.log("socket.io: connection!");
 });
 
 io.listen(ioPort);
@@ -45,8 +61,10 @@ udpSocket.on("message", (data: Buffer, rinfo: RemoteInfo) => {
     } else {
       const message = gt7parser.parse(packet);
 
-      // console.clear();
-      // console.log(message);
+      if (packetCount >= 100) sendHeartbeat(udpSocket);
+
+      packetCount++;
+      io.sockets.emit("message", message);
     }
   }
 });
@@ -58,11 +76,5 @@ udpSocket.on("listening", () => {
 
 udpSocket.bind(bindPort);
 
-udpSocket.send(Buffer.from("A"), 0, 1, receivePort, psIp, (err) => {
-  if (err) {
-    udpSocket.close();
-    return;
-  }
-
-  console.log("data send!");
-});
+// Start by sending heartbeat
+sendHeartbeat(udpSocket);

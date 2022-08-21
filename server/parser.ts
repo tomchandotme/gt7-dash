@@ -8,12 +8,17 @@ const wheel = new Parser()
 
 const vector3 = new Parser().floatle("x").floatle("y").floatle("z");
 
+const vector3rotation = new Parser()
+  .floatle("pitch")
+  .floatle("yaw")
+  .floatle("roll");
+
 export const gt7parser = new Parser()
   .endianness("little")
   .int32le("magic", { assert: 0x47375330 })
   .nest("position", { type: vector3 })
   .nest("velocity", { type: vector3 })
-  .nest("rotation", { type: vector3 })
+  .nest("rotation", { type: vector3rotation })
   .floatle("relativeOrientationToNorth")
   .nest("angularVelocity", { type: vector3 })
   .floatle("bodyHeight")
