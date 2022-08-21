@@ -28,8 +28,14 @@ body,
   }
 }
 
+@media (orientation: landscape) and (max-aspect-ratio: 16 / 9) {
+  :root {
+    font-size: calc((100vw) * 9 / 16 / 1080 * 16);
+  }
+}
+
 @media (orientation: portrait) {
   :root {
-    font-size: calc((100vmax) * 9 / 16 / 1920 * 16);
+    font-size: calc((100vw) * 9 / 16 / 1080 * 16);
   }
 }
