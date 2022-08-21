@@ -21,7 +21,7 @@ const io = new Server({
 const sendHeartbeat = (s: Socket) => {
   s.send(Buffer.from("A"), 0, 1, receivePort, psIp, (err) => {
     if (err) {
-      udpSocket.close();
+      s.close();
       return;
     }
 
@@ -37,6 +37,7 @@ let packetCount: number = 0;
 io.on("connection", (socket) => {
   // ...
   console.log("socket.io: connection!");
+  sendHeartbeat(udpSocket);
 });
 
 io.listen(ioPort);
