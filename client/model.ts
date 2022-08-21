@@ -17,7 +17,7 @@ type Vector3Rotation = {
   roll: number;
 };
 
-enum Flags {
+export enum Flags {
   None = 0,
 
   /// The car is on the track or paddock, with data available.
