@@ -30,7 +30,7 @@ const sendHeartbeat = (s: Socket) => {
   packetCount = 0;
 };
 
-let packetCount = 0;
+let packetCount: number = 0;
 
 // MARK: web socket (communication to dashboard client)
 
