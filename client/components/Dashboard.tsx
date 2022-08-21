@@ -28,6 +28,8 @@ const Flex = styled.div<{ backgroundColor?: string }>`
 
   position: relative;
   background-color: ${(props) => props.backgroundColor || "unset"};
+
+  transition: all 0.1s;
 `;
 
 const Row = styled(Flex)<{ size?: number }>`
