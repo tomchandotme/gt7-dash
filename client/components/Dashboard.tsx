@@ -1,6 +1,30 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { useSocket } from "../hooks/useSocket";
 import { Flags } from "../model";
+
+const GlobalStyle = createGlobalStyle`
+  :root {
+    font-size: calc((100vh) * 16 / 9 / 1920 * 16);
+  }
+
+  @media (orientation: landscape) {
+    :root {
+      font-size: calc((100vh) * 16 / 9 / 1920 * 16);
+    }
+  }
+
+  @media (orientation: landscape) and (max-aspect-ratio: 16 / 9) {
+    :root {
+      font-size: calc((100vw) * 9 / 16 / 1080 * 16);
+    }
+  }
+
+  @media (orientation: portrait) {
+    :root {
+      font-size: calc((100vw) * 9 / 16 / 1080 * 16);
+    }
+  }
+`;
 
 const Container = styled.div`
   background-color: #111;
@@ -58,8 +82,8 @@ const Label = styled.div<{ position: "top" | "bottom" }>`
   position: absolute;
   top: ${(props) => (props.position === "top" ? "0" : "unset")};
   bottom: ${(props) => (props.position === "bottom" ? "0" : "unset")};
-  height: 33%;
-  font-size: 2.75rem;
+  height: 40%;
+  font-size: 2.5rem;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -96,7 +120,7 @@ const Bar = ({
 const RevBarWrapper = styled.div`
   align-self: flex-start;
   flex: 1;
-  height: 50%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -140,55 +164,58 @@ const Dashboard = () => {
   const { packet } = useSocket();
 
   return (
-    <Container>
-      <Row size={0.5}>
-        <RevBar
-          rpm={packet?.rpmFromClutchToGearbox ?? 0}
-          maxAlertRPM={packet?.maxAlertRPM ?? 0}
-          minAlertRPM={packet?.minAlertRPM ?? 0}
-        />
-      </Row>
-      <Row>
-        <Col>
-          <Label position="top">Lap</Label>
-          {packet?.lapCount} / {packet?.lapsInRace}
-        </Col>
-        <Col>{Math.round(packet?.engineRPM ?? 0)}</Col>
-        <Col>
-          <Label position="top">Best Lap Time</Label>
-          {timeFormat(packet?.bestLapTime ?? 0)}
-        </Col>
-      </Row>
-      <Row size={2} backgroundColor="#8882">
-        <SpeedMeter>
-          {Math.round(((packet?.metersPerSecond ?? 0) * 60 * 60) / 1000)}
-          <Label position="bottom">km/h</Label>
-        </SpeedMeter>
-        <Bar type="brake" value={packet?.brake ?? 0} />
-        <Gear size={0.5} backgroundColor="#33cc">
-          {packet?.currentGear}
-        </Gear>
-        <Bar type="throttle" value={packet?.throttle ?? 0} />
-        <SpeedMeter size={0.5}>
-          {packet?.suggestedGear !== 15 && packet?.suggestedGear}
-        </SpeedMeter>
-        <Col size={0.5}>
-          <Label position="top">Gas Level</Label>
-          {Math.round(packet?.gasLevel ?? 0)}
-          <Label position="bottom">
-            Cap: {Math.round(packet?.gasCapacity ?? 0)}
-          </Label>
-        </Col>
-      </Row>
-      <Row size={1.5}>
-        <Col></Col>
-        <Col>
-          {isFlag(packet?.flags, Flags.Paused) ? "Pasued" : ""}
-          {isFlag(packet?.flags, Flags.LoadingOrProcessing) ? "Loading" : ""}
-        </Col>
-        <Col></Col>
-      </Row>
-    </Container>
+    <>
+      <GlobalStyle />
+      <Container>
+        <Row size={0.25}>
+          <RevBar
+            rpm={packet?.rpmFromClutchToGearbox ?? 0}
+            maxAlertRPM={packet?.maxAlertRPM ?? 0}
+            minAlertRPM={packet?.minAlertRPM ?? 0}
+          />
+        </Row>
+        <Row>
+          <Col>
+            <Label position="top">Lap</Label>
+            {packet?.lapCount} / {packet?.lapsInRace}
+          </Col>
+          <Col>{Math.round(packet?.engineRPM ?? 0)}</Col>
+          <Col>
+            <Label position="top">Best Lap Time</Label>
+            {timeFormat(packet?.bestLapTime ?? 0)}
+          </Col>
+        </Row>
+        <Row size={2} backgroundColor="#8882">
+          <SpeedMeter>
+            {Math.round(((packet?.metersPerSecond ?? 0) * 60 * 60) / 1000)}
+            <Label position="bottom">km/h</Label>
+          </SpeedMeter>
+          <Bar type="brake" value={packet?.brake ?? 0} />
+          <Gear size={0.5} backgroundColor="#33cc">
+            {packet?.currentGear}
+          </Gear>
+          <Bar type="throttle" value={packet?.throttle ?? 0} />
+          <SpeedMeter size={0.5}>
+            {packet?.suggestedGear !== 15 && packet?.suggestedGear}
+          </SpeedMeter>
+          <Col size={0.5}>
+            <Label position="top">Gas Level</Label>
+            {Math.round(packet?.gasLevel ?? 0)}
+            <Label position="bottom">
+              Cap: {Math.round(packet?.gasCapacity ?? 0)}
+            </Label>
+          </Col>
+        </Row>
+        <Row size={1.5}>
+          <Col></Col>
+          <Col>
+            {isFlag(packet?.flags, Flags.Paused) ? "Pasued" : ""}
+            {isFlag(packet?.flags, Flags.LoadingOrProcessing) ? "Loading" : ""}
+          </Col>
+          <Col></Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 

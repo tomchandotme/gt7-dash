@@ -17,25 +17,3 @@ body,
   height: 100%;
   background-color: #000;
 }
-
-:root {
-  font-size: calc((100vmin) * 16 / 9 / 1920 * 16);
-}
-
-@media (orientation: landscape) {
-  :root {
-    font-size: calc((100vmin) * 16 / 9 / 1920 * 16);
-  }
-}
-
-@media (orientation: landscape) and (max-aspect-ratio: 16 / 9) {
-  :root {
-    font-size: calc((100vw) * 9 / 16 / 1080 * 16);
-  }
-}
-
-@media (orientation: portrait) {
-  :root {
-    font-size: calc((100vw) * 9 / 16 / 1080 * 16);
-  }
-}
