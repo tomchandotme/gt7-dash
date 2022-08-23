@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const useFullScreen = () => {
   const toggleFullScreen = () => {
     if (
