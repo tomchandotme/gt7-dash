@@ -1,17 +1,17 @@
-type WheelData = {
+export type WheelData = {
   FrontLeft: number;
   FrontRight: number;
   RearLeft: number;
   RearRight: number;
 };
 
-type Vector3 = {
+export type Vector3 = {
   x: number;
   y: number;
   z: number;
 };
 
-type Vector3Rotation = {
+export type Vector3Rotation = {
   pitch: number;
   yaw: number;
   roll: number;

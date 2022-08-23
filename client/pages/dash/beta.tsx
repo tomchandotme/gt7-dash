@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
 import styled from "styled-components";
 import Head from "next/head";
-import Link from "next/link";
+import Dash from "../../components/Beta/Dash";
+import { useFullScreen } from "../../hooks/useFullScreen";
 
 const Container = styled.div`
   display: flex;
@@ -11,14 +12,16 @@ const Container = styled.div`
 `;
 
 const Home: NextPage = () => {
+  const { toggleFullScreen } = useFullScreen();
+
   return (
     <>
       <Head>
-        <title>GT7 - Dash</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>GT7 - Dash - Beta</title>
       </Head>
-      <Container>
-        <Link href="/dash/beta">Beta</Link>
+
+      <Container onDoubleClick={toggleFullScreen}>
+        <Dash />
       </Container>
     </>
   );
