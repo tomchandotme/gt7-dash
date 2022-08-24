@@ -181,6 +181,12 @@ const RevBar = ({
     </RevBarWrapper>
   );
 };
+const FuelBarWrapper = styled(RevBarWrapper)<{ isRed: boolean }>`
+  background-color: ${(props) => (props.isRed ? "#c444" : "#000")};
+`;
+const FuelBarInner = styled(RevBarInner)<{ isRed: boolean }>`
+  background-color: ${(props) => (props.isRed ? "#c444" : "#fff4")};
+`;
 const FuelBar = ({
   gasLevel = 0,
   gasCapacity = 0,
@@ -190,21 +196,16 @@ const FuelBar = ({
 }) => {
   return (
     <>
-      <RevBarWrapper
-        style={{
-          backgroundColor: gasLevel / gasCapacity <= 0.25 ? "#c444" : "#0000",
-        }}
-      >
+      <FuelBarWrapper isRed={gasLevel / gasCapacity <= 0.25}>
         {gasCapacity > 0 && (
-          <RevBarInner
+          <FuelBarInner
+            isRed={gasLevel / gasCapacity <= 0.25}
             style={{
-              backgroundColor:
-                gasLevel / gasCapacity <= 0.25 ? "#f444" : "#fff4",
               width: `${(gasLevel / gasCapacity) * 100}%`,
             }}
           />
         )}
-      </RevBarWrapper>
+      </FuelBarWrapper>
       <FuelText>
         {((gasLevel / (gasCapacity || 100)) * 100).toFixed(2)}%
       </FuelText>
@@ -350,10 +351,7 @@ const Dash = () => {
           {/* <Col /> */}
         </Row>
         <Row size={0.25}>
-          <FuelBar
-            gasLevel={packet?.gasLevel}
-            gasCapacity={packet?.gasCapacity}
-          />
+          <FuelBar gasLevel={0} gasCapacity={0} />
         </Row>
       </Container>
     </>
