@@ -44,6 +44,7 @@ const Container = styled.div`
 
   outline: 0.6rem solid #ccc;
   outline-offset: -0.6rem;
+  padding: 0.6rem;
 
   aspect-ratio: 19 / 10;
   width: calc(100vmin * 19 / 10);
@@ -139,7 +140,7 @@ const LabelInner = styled.div`
 const Label = ({
   children,
   position = "center-center",
-  fontSize = "2.5rem",
+  fontSize = "3rem",
 }: {
   children?: ReactNode;
   position?: `${"top" | "center" | "bottom"}-${"left" | "center" | "right"}`;
