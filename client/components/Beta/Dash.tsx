@@ -289,7 +289,7 @@ const FlagLabel = styled.span`
   color: #000;
 `;
 
-const Dash = () => {
+export const Dash = () => {
   const { packet } = useSocket();
 
   return (
@@ -358,4 +358,3 @@ const Dash = () => {
   );
 };
 
-export default Dash;
