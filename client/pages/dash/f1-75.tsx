@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import styled from "styled-components";
 import Head from "next/head";
-import { Dash } from "../../components/Beta/";
+import { Dash } from "../../components/F1-75/";
 import { useFullScreen } from "../../hooks/useFullScreen";
 
 const Container = styled.div`
@@ -11,13 +11,13 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const BetaDashPage: NextPage = () => {
+const F175DashPage: NextPage = () => {
   const { toggleFullScreen } = useFullScreen();
 
   return (
     <>
       <Head>
-        <title>GT7 - Dash - Beta</title>
+        <title>GT7 - Dash - F1-75</title>
       </Head>
 
       <Container onDoubleClick={toggleFullScreen}>
@@ -27,4 +27,4 @@ const BetaDashPage: NextPage = () => {
   );
 };
 
-export default BetaDashPage;
+export default F175DashPage;
