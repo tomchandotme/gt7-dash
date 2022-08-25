@@ -41,6 +41,7 @@ const Container = styled.div`
   font-size: 5rem;
   font-weight: 500;
   font-variant: tabular-nums;
+  font-family: "Arial", "Helvetica", sans-serif;
 
   outline: 0.6rem solid #ccc;
   outline-offset: -0.6rem;
@@ -67,8 +68,6 @@ const Flex = styled.div<{ backgroundColor?: string }>`
 
   position: relative;
   background-color: ${(props) => props.backgroundColor || undefined};
-
-  transition: all 0.1s;
 `;
 
 const Row = styled(Flex)<{ size?: number }>`
@@ -89,20 +88,24 @@ const Col = styled(Flex)<{ size?: number; noBorder?: boolean }>`
   outline: ${(props) => (props.noBorder ? "none" : "0.3rem solid #ccc")};
 `;
 
-const RPMText = styled(Col)`
-  font-size: 15rem;
+const RPMText = styled(Col)<{ isAlert?: boolean }>`
+  font-size: 18rem;
   font-weight: 700;
+  color: ${(props) => (props.isAlert ? "#f22" : "unset")};
 `;
 
 const RPM = ({
   rpm = 0,
+  minAlertRPM = 0,
+  maxAlertRPM = 0,
+  isAlert,
 }: {
   rpm?: number;
   maxAlertRPM?: number;
   minAlertRPM?: number;
   isAlert?: boolean;
 }) => {
-  return <RPMText>{rpm}</RPMText>;
+  return <RPMText isAlert={rpm > minAlertRPM || isAlert}>{rpm}</RPMText>;
 };
 
 const Gear = styled(Col).attrs({ size: 5 })`
@@ -111,19 +114,19 @@ const Gear = styled(Col).attrs({ size: 5 })`
 `;
 
 const Temp = styled(Col)`
-  font-size: 14rem;
+  font-size: 17.5rem;
   font-weight: 700;
   color: #f22;
 `;
 
 const Time = styled(Col)<{ isBest?: boolean }>`
-  font-size: 12rem;
+  font-size: 15rem;
   font-weight: 700;
   color: ${(props) => (props.isBest ? "#c2c" : "#2f2")};
 `;
 
 const Speed = styled(Col)`
-  font-size: 15rem;
+  font-size: 17.5rem;
   font-weight: 700;
 `;
 
@@ -149,12 +152,55 @@ const Label = ({
   const [vPos, hPos] = position.split("-");
   const style = {
     fontSize,
-    top: vPos === "top" ? fontSize : undefined,
+    top: vPos === "top" ? `calc(${fontSize} * 0.75 + 0.5rem)` : undefined,
     bottom: vPos === "bottom" ? fontSize : undefined,
-    left: hPos === "left" ? "2.5rem" : undefined,
-    right: hPos === "right" ? "2.5rem" : undefined,
+    left: hPos === "left" ? "1.5rem" : undefined,
+    right: hPos === "right" ? "1.5rem" : undefined,
   };
   return <LabelInner style={style}>{children}</LabelInner>;
+};
+
+const FlagsGrid = styled(Col)`
+  height: calc(100% - 2.4rem);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  padding: 1.2rem;
+`;
+const FlagLabel = styled(Flex)`
+  height: 100%;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  /* margin: 0.5rem; */
+  /* padding: 0.5rem 0.5rem; */
+  /* background-color: #fff8; */
+  color: #fff;
+`;
+
+const FuelCell = styled(Col)<{ type: "red" | "green" | "none" }>`
+  mix-blend-mode: lighten;
+  background-color: ${(props) =>
+    props.type === "none" ? "none" : props.type === "red" ? "#b22" : "#284"};
+`;
+
+const FuelBar = ({
+  level = 0,
+  capacity = 0,
+}: {
+  level?: number;
+  capacity?: number;
+}) => {
+  const gasLevel = level / capacity || 100;
+
+  return (
+    <>
+      {range(20).map((v) => {
+        const type = gasLevel <= v / 20 ? "none" : v < 5 ? "red" : "green";
+        return <FuelCell type={type} key={`fuel_${v}`} />;
+      })}
+    </>
+  );
 };
 
 export const Dash = () => {
@@ -167,33 +213,51 @@ export const Dash = () => {
         <Row size={2}>
           <Time>
             <Label position="top-left">LAST LAP</Label>
-            {timeFormat(244887)}
+            {timeFormat(packet?.lastLapTime)}
           </Time>
-          <RPM rpm={12443} />
+          <RPM
+            rpm={Math.round(packet?.engineRPM ?? 0)}
+            minAlertRPM={packet?.minAlertRPM}
+            maxAlertRPM={packet?.maxAlertRPM}
+            isAlert={isFlag(packet?.flags, Flags.RevLimiterBlinkAlertActive)}
+          />
           <Time isBest>
             <Label position="top-right">BEST LAP</Label>
-            {timeFormat(94887)}
+            {timeFormat(packet?.bestLapTime)}
           </Time>
         </Row>
         <Row size={4}>
           <Col size={4} noBorder>
             <Speed>
-              <Label position="top-left">SPEED</Label>334
+              <Label position="top-left">SPEED</Label>
+              <div>
+                {Math.round(((packet?.metersPerSecond ?? 0) * 60 * 60) / 1000)}
+              </div>
             </Speed>
             <Lap>
-              <Label position="top-left">LAP</Label>4/10
+              <Label position="top-left">LAP</Label>
+              {packet?.lapCount} / {totalLapCountFormat(packet?.lapsInRace)}
             </Lap>
           </Col>
           <Col size={3} noBorder>
-            <Temp>24</Temp>
-            <Temp>24</Temp>
+            <Temp>
+              {Math.round(packet?.tireSurfaceTemperature.FrontLeft ?? 0)}
+            </Temp>
+            <Temp>
+              {Math.round(packet?.tireSurfaceTemperature.RearLeft ?? 0)}
+            </Temp>
           </Col>
           <Gear>
-            <Label position="top-left">GEAR</Label>8
+            <Label position="top-left">GEAR</Label>
+            {gearFormat(packet?.currentGear)}
           </Gear>
           <Col size={3} noBorder>
-            <Temp>204</Temp>
-            <Temp>24</Temp>
+            <Temp>
+              {Math.round(packet?.tireSurfaceTemperature.FrontRight ?? 0)}
+            </Temp>
+            <Temp>
+              {Math.round(packet?.tireSurfaceTemperature.RearRight ?? 0)}
+            </Temp>
           </Col>
           <Col size={4} noBorder>
             <Col></Col>
@@ -201,23 +265,14 @@ export const Dash = () => {
           </Col>
         </Row>
         <Row size={2}>
-          <Col size={4}></Col>
-          <Col size={2.5}></Col>
-          <Col size={6}>flag?</Col>
-          <Col size={2.5}></Col>
-          <Col size={4}></Col>
+          <FlagsGrid size={6}>
+            {flagsToValues(packet?.flags).map((f) => (
+              <FlagLabel key={f}>{f}</FlagLabel>
+            ))}
+          </FlagsGrid>
         </Row>
         <Row size={1}>
-          {range(20).map((v) => (
-            <Col
-              key={`fuel_col_${v}`}
-              style={{
-                fontSize: "1rem",
-                backgroundColor: v >= 4 ? "#284" : "#b22",
-                mixBlendMode: "lighten",
-              }}
-            ></Col>
-          ))}
+          <FuelBar level={packet?.gasLevel} capacity={packet?.gasCapacity} />
         </Row>
       </Container>
     </>

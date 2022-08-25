@@ -7,12 +7,11 @@ export const timeFormat = (t: number | undefined = 0) => {
   const ss = `${Math.floor(t / 1000) % 60}`.padStart(2, "0");
   const mm = `${Math.floor(t / 1000 / 60)}`;
 
-  return `${mm}'${ss}:${ms}`;
+  return `${mm}'${ss}.${ms}`;
 };
 
 export const gearFormat = (g: number | undefined) => {
-  if (isUndefined(g)) return "";
-  else if (g === -1) return "N";
+  if (isUndefined(g) || g === -1) return "N";
   else if (g === 0) return "R";
   else return g;
 };
