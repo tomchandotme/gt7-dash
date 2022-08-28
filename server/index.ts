@@ -13,12 +13,16 @@ const receivePort: number = 33739;
 const psIp: string = process.env.PLAYSTAION_IP;
 const ioPort = 9527;
 
+let isUdpSocketReady = false;
+
 const io = new Server({
   /* options */
   cors: {},
 });
 
 const sendHeartbeat = (s: Socket) => {
+  if (!isUdpSocketReady) return;
+
   s.send(Buffer.from("A"), 0, 1, receivePort, psIp, (err) => {
     if (err) {
       s.close();
@@ -72,6 +76,7 @@ udpSocket.on("message", (data: Buffer, rinfo: RemoteInfo) => {
 
 udpSocket.on("listening", () => {
   const address = udpSocket.address();
+  isUdpSocketReady = true;
   console.log(`server listening ${address.address}:${address.port}`);
 });
 
