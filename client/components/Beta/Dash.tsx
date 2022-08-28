@@ -168,7 +168,7 @@ const RevBar = ({
   maxAlertRPM?: number;
   isAlert?: boolean;
 }) => {
-  const rpmRange = (maxAlertRPM - minAlertRPM) * 1;
+  const rpmRange = 1000;
   const width = rpm - (minAlertRPM - rpmRange);
   return (
     <RevBarWrapper>
