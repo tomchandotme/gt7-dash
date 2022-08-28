@@ -1,0 +1,9 @@
+{
+  "name": "GT7 - Dash",
+  "short_name": "GT7Dash",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape"
+}
