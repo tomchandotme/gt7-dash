@@ -351,10 +351,12 @@ export const Dash = () => {
           {/* <Col /> */}
         </Row>
         <Row size={0.25}>
-          <FuelBar gasLevel={0} gasCapacity={0} />
+          <FuelBar
+            gasLevel={packet?.gasLevel}
+            gasCapacity={packet?.gasCapacity}
+          />
         </Row>
       </Container>
     </>
   );
 };
-
