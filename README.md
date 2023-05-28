@@ -26,8 +26,9 @@ npm run start:server
 npm run start:client
 ```
 
+
 ## Screenshot
-![Screenshot](https://github.com/tomchandotme/gt7-dash/assets/7760754/f7d28b6b-aa92-4305-8ddd-dbcfad577dd5)
+![Screenshot 2023-05-28 at 01 27 47](https://github.com/tomchandotme/gt7-dash/assets/7760754/41fb11f8-3a31-4f89-8e9a-d7f216bbc45b)
 
 ## Video Demo
 [Watch the video](https://youtu.be/p7RcIV-_aC0)
